@@ -19,12 +19,12 @@ function getHighlightClass(
     return "HighlightProduct";
   }
 
-  if (column === 1 && row <= highlight[0]) {
-    return "HighlightMultiplier";
+  if (column === 1) {
+    return row <= highlight[0] ? "HighlightMultiplier" : "HighlightAxis";
   }
 
-  if (row === 1 && column <= highlight[1]) {
-    return "HighlightMultiplier";
+  if (row === 1) {
+    return column <= highlight[1] ? "HighlightMultiplier" : "HighlightAxis";
   }
 
   if (row > 1 && column > 1 && row <= highlight[0] && column <= highlight[1]) {
@@ -32,36 +32,6 @@ function getHighlightClass(
   }
 
   return "";
-}
-
-function getBorderClasses(
-  row: number,
-  column: number,
-  highlight: Coord
-): string {
-  const classes: string[] = [];
-
-  // Top border?
-  if (row === 1 && column <= highlight[1]) {
-    classes.push("BorderTop");
-  }
-
-  // Left border?
-  if (column === 1 && row <= highlight[0]) {
-    classes.push("BorderLeft");
-  }
-
-  // Bottom border?
-  if (row === highlight[0] && column <= highlight[1]) {
-    classes.push("BorderBottom");
-  }
-
-  // Right border?
-  if (column === highlight[1] && row <= highlight[0]) {
-    classes.push("BorderRight");
-  }
-
-  return classes.join(" ");
 }
 
 export default function App() {
@@ -118,27 +88,44 @@ export default function App() {
     };
   }, [onKeyDown]);
 
+  const highlightOutlineStyle = {
+    gridRowStart: 1,
+    gridColumnStart: 1,
+    gridRowEnd: highlight[0] + 1,
+    gridColumnEnd: highlight[1] + 1
+  };
+
   return (
     <div className="App">
-      {Array.from({ length: 12 }).map((_, r) => (
-        <div key={r} className="Row">
-          {Array.from({ length: 12 }).map((_, c) => (
+      <div className="HighlightOutline" style={highlightOutlineStyle} />
+      {Array.from({ length: 12 }).map((_, r) =>
+        Array.from({ length: 12 }).map((_, c) => {
+          const rw = r + 1;
+          const col = c + 1;
+          const strCoord = `${rw},${col}`;
+          const product = rw * col;
+          const gridCellStyle = {
+            gridRow: rw,
+            gridColumn: col
+          };
+
+          const className = ["Cell", getHighlightClass(rw, col, highlight)]
+            .filter((i) => i)
+            .join(" ");
+
+          return (
             <div
-              key={c}
-              className={
-                "Cell " +
-                getHighlightClass(r + 1, c + 1, highlight) +
-                " " +
-                getBorderClasses(r + 1, c + 1, highlight)
-              }
-              data-coord={`${r + 1},${c + 1}`}
+              key={strCoord}
+              data-coord={strCoord}
+              className={className}
+              style={gridCellStyle}
               onClick={onClickCell}
             >
-              {(r + 1) * (c + 1)}
+              {product}
             </div>
-          ))}
-        </div>
-      ))}
+          );
+        })
+      )}
     </div>
   );
 }

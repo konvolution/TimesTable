@@ -4,6 +4,10 @@
   --outline-border-width: 2pt;
   --outline-border-color: #125;
   --border-color: darkgray;
+  --product-square-color: #c82;
+  --axis-square-color: yellow;
+  --highlighted-axis-color: #bb0;
+  --highlighted-offaxis-color: lightgray;
 }
 
 * {
@@ -11,68 +15,45 @@
 }
 
 .App {
-  display: flex;
-  align-items: flex-start;
-  flex-direction: column;
+  display: grid;
   font-family: sans-serif;
   font-size: 16pt;
   text-align: center;
-}
-
-.Row {
-  display: flex;
-  flex: none;
-  flex-direction: row;
-}
-
-.Row:nth-child(1) .Cell {
-  border-top: var(--border-width) solid var(--border-color);
-  font-weight: bold;
-  background-color: yellow;
+  grid-auto-columns: var(--cell-size);
+  grid-auto-rows: var(--cell-size);
 }
 
 .Cell {
-  border: var(--border-width) solid var(--border-color);
-  border-top-width: 0;
-  border-left-width: 0;
+  position: relative;
+  margin-right: calc(-1 * var(--border-width));
+  margin-bottom: calc(-1 * var(--border-width));
   display: flex;
   align-items: center;
   justify-content: center;
-  width: var(--cell-size);
-  height: var(--cell-size);
+  border: var(--border-width) solid var(--border-color);
   transition: background-color 0.4s;
 }
 
-.Cell:nth-child(1) {
-  border-left: var(--border-width) solid var(--border-color);
-  font-weight: bold;
-  background-color: yellow;
+.Cell.HighlightAxis {
+  background-color: var(--axis-square-color);
 }
 
-.Cell.Cell.HighlightProduct {
-  background-color: #c82;
+.Cell.HighlightProduct {
+  background-color: var(--product-square-color);
 }
 
-.Cell.Cell.HighlightMultiplier {
-  background-color: #bb0;
+.Cell.HighlightMultiplier {
+  background-color: var(--highlighted-axis-color);
 }
 
-.Cell.Cell.HighlightRowOrColumn {
-  background-color: lightgray;
+.Cell.HighlightRowOrColumn {
+  background-color: var(--highlighted-offaxis-color);
 }
 
-.Cell.Cell.BorderTop {
-  border-top: var(--outline-border-width) solid var(--outline-border-color);
-}
-
-.Cell.Cell.BorderLeft {
-  border-left: var(--outline-border-width) solid var(--outline-border-color);
-}
-
-.Cell.Cell.BorderRight {
-  border-right: var(--outline-border-width) solid var(--outline-border-color);
-}
-
-.Cell.Cell.BorderBottom {
-  border-bottom: var(--outline-border-width) solid var(--outline-border-color);
+.HighlightOutline {
+  border: var(--outline-border-width) solid var(--outline-border-color);
+  margin-right: calc(-1 * var(--border-width));
+  margin-bottom: calc(-1 * var(--border-width));
+  z-index: 1;
+  pointer-events: none;
 }
